@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MoneyTrack - a simple personal finance tracker">
+  <title>MoneyTrack | Personal Finance Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="MoneyTrack home">
+        <span class="brand-mark">$</span>
+        <span>MoneyTrack</span>
+      </a>
+      <p class="tagline">Simple money, better habits.</p>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">PERSONAL FINANCE</p>
+          <h1>Know where your money goes.</h1>
+          <p class="hero-text">Track income and spending in one clean dashboard. Your data stays on this device.</p>
+        </div>
+        <button class="primary-btn" id="openModalBtn" type="button">+ Add transaction</button>
+      </section>
+
+      <section class="summary-grid" aria-label="Financial summary">
+        <article class="summary-card balance-card">
+          <div class="card-icon">↗</div>
+          <div>
+            <p>Total balance</p>
+            <h2 id="balanceValue">฿0.00</h2>
+          </div>
+        </article>
+        <article class="summary-card income-card">
+          <div class="card-icon">↑</div>
+          <div>
+            <p>Total income</p>
+            <h2 id="incomeValue">฿0.00</h2>
+          </div>
+        </article>
+        <article class="summary-card expense-card">
+          <div class="card-icon">↓</div>
+          <div>
+            <p>Total expenses</p>
+            <h2 id="expenseValue">฿0.00</h2>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">OVERVIEW</p>
+              <h2>Spending by category</h2>
+            </div>
+            <span class="period-label">All time</span>
+          </div>
+          <div id="spendingChart" class="chart" aria-label="Spending chart"></div>
+          <div id="chartLegend" class="chart-legend"></div>
+          <div id="emptyChart" class="empty-state small">
+            <span>📊</span>
+            <p>Add an expense to see your spending chart.</p>
+          </div>
+        </article>
+
+        <article class="panel category-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">BREAKDOWN</p>
+              <h2>Category summary</h2>
+            </div>
+          </div>
+          <div id="categorySummary" class="category-list"></div>
+          <div id="emptyCategories" class="empty-state small">
+            <span>🧾</span>
+            <p>Your spending categories will appear here.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel transactions-panel">
+        <div class="panel-heading transactions-heading">
+          <div>
+            <p class="section-kicker">ACTIVITY</p>
+            <h2>Transactions</h2>
+          </div>
+          <span id="transactionCount" class="count-badge">0 transactions</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Transaction</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th class="amount-col">Amount</th>
+                <th aria-label="Actions"></th>
+              </tr>
+            </thead>
+            <tbody id="transactionList"></tbody>
+          </table>
+        </div>
+
+        <div id="emptyTransactions" class="empty-state">
+          <span>💸</span>
+          <h3>No transactions yet</h3>
+          <p>Start tracking your money by adding your first transaction.</p>
+          <button class="secondary-btn" id="emptyAddBtn" type="button">Add transaction</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>MoneyTrack</span>
+      <span>Your data is stored locally in your browser.</span>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div>
+          <p class="section-kicker">NEW ENTRY</p>
+          <h2 id="modalTitle">Add transaction</h2>
+        </div>
+        <button class="close-btn" id="closeModalBtn" type="button" aria-label="Close">×</button>
+      </div>
+
+      <form id="transactionForm">
+        <div class="type-toggle" role="group" aria-label="Transaction type">
+          <button type="button" class="type-btn active" data-type="expense">Expense</button>
+          <button type="button" class="type-btn" data-type="income">Income</button>
+        </div>
+
+        <input type="hidden" id="transactionType" value="expense">
+
+        <div class="form-grid">
+          <label>
+            <span>Name</span>
+            <input id="name" type="text" maxlength="60" placeholder="e.g. Lunch" required>
+          </label>
+
+          <label>
+            <span>Amount</span>
+            <input id="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+          </label>
+
+          <label>
+            <span>Category</span>
+            <select id="category" required>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Bills">Bills</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Date</span>
+            <input id="date" type="date" required>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="secondary-btn" id="cancelBtn" type="button">Cancel</button>
+          <button class="primary-btn" type="submit">Save transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
